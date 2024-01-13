@@ -1,11 +1,10 @@
-import 'dart:convert' show jsonDecode;
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter_nutrition_tracker/models/food.dart';
+import 'package:flutter_nutrition_tracker/models/dummy_data.dart';
+import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class History extends StatefulWidget {
-  const History({super.key});
+  const History({Key? key}) : super(key: key);
 
   @override
   State<History> createState() => _HistoryState();
@@ -14,109 +13,38 @@ class History extends StatefulWidget {
 class _HistoryState extends State<History> {
   DateTime today = DateTime.now();
   DateTime? _selectedDay;
-  List<Food> _foodList = <Food>[];
-  Map<DateTime, String> foodName = {};
-  TextEditingController _foodNameController = TextEditingController();
+  //List<FoodCard> selectedFoodList = [];
+  //Map<DateTime, List<FoodCard>> event = {};
+  //final List<FoodCard> _listEventCard = dummyData;
 
-  //testing by input
-  Future<List<Food>> fetchFoods(String foodName) async {
-    var apiKey = "7JdkTq3FchntRBv5Ax1Eog==lWifTLw8ivhrr98C";
-    var url = 'https://api.api-ninjas.com/v1/nutrition?query=$foodName';
-    var response =
-        await http.get(Uri.parse(url), headers: {'X-Api-Key': apiKey});
+  @override
+  void initState() {
+    super.initState();
+    // Populate event map with dummy data for today
+    today = DateTime.now();
+    // event[today] = _listEventCard;
 
-    var foods = <Food>[];
-
-    if (response.statusCode == 200) {
-      List<dynamic> jsonList = jsonDecode(response.body);
-
-      for (var foodsJson in jsonList) {
-        foods.add(Food.fromJson(foodsJson));
-      }
-    } else {
-      throw Exception('Failed to load food nutritions');
-    }
-    return foods;
+    // if (event.containsKey(today)) {
+    //   selectedFoodList = event[today]!;
+    // }
   }
-
-  Future<void> _updateFoodData(String foodName) async {
-    try {
-      var foods = await fetchFoods(foodName);
-      setState(() {
-        // Store the fetched data in the list
-        _foodList = foods;
-      });
-
-      // Print the stored data
-      _foodList.forEach((food) {
-        printFoodDetails(food);
-      });
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
-  }
-
-  void printFoodDetails(Food food) {
-    print('Name: \t\t ${food.name}');
-    print('Calories: \t ${food.calories}');
-    print('Serving size (g): \t ${food.servingSizeG}');
-    print('Fat Total (g): \t ${food.fatTotalG}');
-    print('Sodium (mg): \t\t ${food.sodiumMg}');
-    print('Potassium (mg): \t ${food.potassiumMg}');
-    print('Cholesterol (mg): \t ${food.cholesterolMg}');
-    print('Carbohydrates Total (g): ${food.carbohydratesTotalG}');
-    print('Fiber (g): \t\t ${food.fiberG}');
-    print('Sugar (g): \t\t ${food.sugarG}');
-    // ... print other details ...
-    print('-------------------------');
-  }
-  //here
 
   void _onDaySelected(DateTime day, DateTime focusedDay) {
     setState(() {
       today = day;
+      _selectedDay = focusedDay;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text("Nutrition History"),
-          centerTitle: true,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    scrollable: true,
-                    title: Text("Input food"),
-                    content: Padding(
-                      padding: EdgeInsets.all(8),
-                      child: TextField(
-                        controller: _foodNameController,
-                      ),
-                    ),
-                    actions: [
-                      ElevatedButton(
-                        onPressed: () {
-                          _updateFoodData(_foodNameController.text);
-
-                          foodName.addAll(
-                              {_selectedDay!: _foodNameController.text});
-                          Navigator.of(context).pop();
-                        },
-                        child: Text("Submit"),
-                      )
-                    ],
-                  );
-                });
-          },
-          child: Icon(Icons.add),
-        ),
-        body: content());
+      appBar: AppBar(
+        title: const Text("Nutrition History"),
+        centerTitle: true,
+      ),
+      body: content(),
+    );
   }
 
   Widget content() {
@@ -128,15 +56,17 @@ class _HistoryState extends State<History> {
             child: TableCalendar(
               locale: "en_US",
               headerStyle: const HeaderStyle(
-                  formatButtonVisible: false, titleCentered: true),
+                formatButtonVisible: false,
+                titleCentered: true,
+              ),
               availableGestures: AvailableGestures.all,
               selectedDayPredicate: (day) => isSameDay(day, today),
               firstDay: DateTime.utc(2000, 1, 1),
               lastDay: DateTime.utc(2099, 12, 31),
-              focusedDay: today,
+              focusedDay: today, // Set the initial focused day to today
               onDaySelected: _onDaySelected,
             ),
-          )
+          ),
         ],
       ),
     );
