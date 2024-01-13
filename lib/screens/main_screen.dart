@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nutrition_tracker/screens/add_nutrtion_screen.dart';
+import 'package:flutter_nutrition_tracker/screens/history_nutrition_screen.dart';
 import 'package:flutter_nutrition_tracker/screens/nutrition_screen.dart';
 
 class MainScreen extends StatefulWidget {
@@ -29,14 +29,14 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.add),
-            label: 'Add Nutrtion',
+            icon: Icon(Icons.history_outlined),
+            label: 'History',
           ),
         ],
       ),
       body: [
         const AllNutrition(),
-        const AddNutrtion(),
+        const History(),
       ][_currentIndex],
     );
   }
