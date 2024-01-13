@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_nutrition_tracker/screens/add_nutritioin_screen.dart';
 import 'package:flutter_nutrition_tracker/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 
 class AllNutrition extends StatefulWidget {
@@ -34,17 +35,17 @@ class _AllNutritionState extends State<AllNutrition> {
                     const Text(
                       "Welcome,",
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     Text(
                       user?.email ?? '',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                   ],
@@ -64,8 +65,17 @@ class _AllNutritionState extends State<AllNutrition> {
         title: const Text("Nutrition Tracker"),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text("data"),
+      body: const Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const AddNutrition(),
+          ));
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
