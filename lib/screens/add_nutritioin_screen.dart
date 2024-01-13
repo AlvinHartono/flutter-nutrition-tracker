@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/config/config.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
+import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 import 'package:http/http.dart' as http;
 
 class AddNutrition extends StatefulWidget {
@@ -187,7 +188,25 @@ class _AddNutritionState extends State<AddNutrition> {
           ),
           Center(
             child: ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                final Food food = Food(
+                    name: _foods[0].name,
+                    calories: _foods[0].calories,
+                    servingSizeG: _foods[0].servingSizeG,
+                    fatTotalG: _foods[0].fatTotalG,
+                    fatSaturatedG: _foods[0].fatSaturatedG,
+                    proteinG: _foods[0].proteinG,
+                    sodiumMg: _foods[0].sodiumMg,
+                    potassiumMg: _foods[0].potassiumMg,
+                    cholesterolMg: _foods[0].cholesterolMg,
+                    carbohydratesTotalG: _foods[0].carbohydratesTotalG,
+                    fiberG: _foods[0].fiberG,
+                    sugarG: _foods[0].sugarG);
+
+                Navigator.of(context).pop(
+                  FoodCard(food: food),
+                );
+              },
               icon: const Icon(Icons.add),
               label: Text("add ${_foods[0].name}"),
             ),
