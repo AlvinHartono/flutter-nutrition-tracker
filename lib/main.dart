@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/firebase_options.dart';
-import 'package:flutter_nutrition_tracker/screens/login_screen.dart';
 import 'package:flutter_nutrition_tracker/widget_tree.dart';
 
 Future<void> main() async {
