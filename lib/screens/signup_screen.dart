@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_nutrition_tracker/screens/login_screen.dart';
+import 'package:flutter_nutrition_tracker/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
@@ -10,14 +11,17 @@ class SignupScreen extends StatefulWidget {
 }
 
 class _SignupScreenState extends State<SignupScreen> {
+  String? errorMessage = '';
+
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _password = TextEditingController();
-  TextEditingController _passwordConfirm = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+  final TextEditingController _passwordConfirm = TextEditingController();
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _email.dispose();
     _password.dispose();
@@ -105,6 +109,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         //firebase
+                        signUp();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );
@@ -129,9 +134,10 @@ class _SignupScreenState extends State<SignupScreen> {
                           ));
                         },
                         child: const Text("Login"),
-                      )
+                      ),
                     ],
                   ),
+                  Text(errorMessage == "" ? "" : "$errorMessage"),
                 ],
               ),
             ),
@@ -139,5 +145,37 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  // Functions
+  void signUp() async {
+    String email = _email.text;
+    String password = _password.text;
+
+    try {
+      final userCredential = await _auth.signUpWithEmailAndPassword(
+          email: email, password: password);
+      print(userCredential);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Signup Successful'),
+        ),
+      );
+
+      Future.delayed(const Duration(seconds: 1), () {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => const LoginScreen(),
+        ));
+      });
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Authentication Failed'),
+        ),
+      );
+    }
   }
 }

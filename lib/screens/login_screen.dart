@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_nutrition_tracker/screens/signup_screen.dart';
+import 'package:flutter_nutrition_tracker/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,13 +12,34 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  bool isLogin = true;
+  String? errorMessage = "";
+
+  Future<void> signInWithEmailAndPassword() async {
+    //
+    try {
+      final userCredential =
+          await FirebaseAuthService().signInWithEmailAndPassword(
+        email: _email.text,
+        password: _password.text,
+      );
+      print(userCredential);
+    } on FirebaseAuthException catch (error) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error.message ?? 'Authentication Failed'),
+        ),
+      );
+    }
+  }
+
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _email = TextEditingController();
-  TextEditingController _password = TextEditingController();
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _email.dispose();
     _password.dispose();
@@ -48,6 +71,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.none,
                     controller: _email,
                     decoration: const InputDecoration(
                       labelText: "Email",
@@ -65,6 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                   TextFormField(
+                    obscureText: true,
                     controller: _password,
                     decoration: const InputDecoration(
                       labelText: "Password",
@@ -85,9 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         //firebase
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
+                        signInWithEmailAndPassword();
                       }
                     },
                     child: const Text(
@@ -109,9 +134,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ));
                         },
                         child: const Text("Sign Up"),
-                      )
+                      ),
                     ],
                   ),
+                  Text(errorMessage ?? ""),
                 ],
               ),
             ),
