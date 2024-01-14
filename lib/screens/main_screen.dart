@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
 import 'package:flutter_nutrition_tracker/screens/history_nutrition_screen.dart';
 import 'package:flutter_nutrition_tracker/screens/nutrition_screen.dart';
 
@@ -11,6 +13,15 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    // print(FirebaseAuthService().currentUser?.uid);
+    // database.createCollection(FirebaseAuthService().currentUser?.uid);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

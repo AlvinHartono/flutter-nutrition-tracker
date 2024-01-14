@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_nutrition_tracker/models/dummy_data.dart';
-import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/screens/add_nutritioin_screen.dart';
-import 'package:flutter_nutrition_tracker/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 
 class AllNutrition extends StatefulWidget {
@@ -118,10 +117,14 @@ class _AllNutritionState extends State<AllNutrition> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          FoodCard newData = await Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => AddNutrition(),
-          ));
-          _addFoodCard(newData);
+          var newData = await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const AddNutrition(),
+            ),
+          );
+          if (newData != null) {
+            _addFoodCard(newData);
+          }
         },
         child: const Icon(Icons.add),
       ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/screens/login_screen.dart';
 import 'package:flutter_nutrition_tracker/screens/main_screen.dart';
-import 'package:flutter_nutrition_tracker/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 
 class WidgetTree extends StatefulWidget {
   const WidgetTree({super.key});
