@@ -5,6 +5,7 @@ import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/screens/add_nutritioin_screen.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
+import 'package:flutter_nutrition_tracker/widgets/pie_chart_widget.dart';
 
 class AllNutrition extends StatefulWidget {
   const AllNutrition({super.key});
@@ -100,13 +101,23 @@ class _AllNutritionState extends State<AllNutrition> {
         child: Column(
           children: [
             Container(
-              width: double.infinity,
-              height: 250,
-              color: Colors.red,
-              child: const Center(
-                child: Text('Add something like charts etc'),
-              ),
-            ),
+                width: double.infinity,
+                height: 250,
+                color: Colors.red,
+                child: Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+                      color: Colors.black12,
+                      width: 200,
+                      height: 200,
+                      child: PieChartWidget(
+                        listOfFood: _foodList,
+                        title: "Calories",
+                      ),
+                    ),
+                  ],
+                )),
             const SizedBox(
               height: 14,
             ),
@@ -129,8 +140,23 @@ class _AllNutritionState extends State<AllNutrition> {
                       ),
                       itemCount: _foodList.length,
                       itemBuilder: (context, index) {
-                        return FoodCard(
-                          food: _foodList[index],
+                        return Dismissible(
+                          background: Container(
+                            color: Colors.redAccent,
+                            child: const Icon(Icons.delete),
+                          ),
+                          key: ValueKey(
+                            _foodList[index],
+                          ),
+                          onDismissed: (direction) {
+                            print('yo');
+                            setState(() {
+                              _foodList.removeAt(index);
+                            });
+                          },
+                          child: FoodCard(
+                            food: _foodList[index],
+                          ),
                         );
                       },
                     ),
