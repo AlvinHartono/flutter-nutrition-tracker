@@ -12,20 +12,22 @@ class FirebaseFirestoreHelper {
 
   Future<void> createFields(String? id, Map<String, dynamic> foodJSON) async {
     try {
-      DocumentReference documentRef = _db.collection(userId).doc("2024-01-15");
-      DocumentSnapshot documentSnapshot = await documentRef.get();
+      //
+      final foodref = _db.collection(userId).doc("2024-01-14");
+      DocumentSnapshot doc = await foodref.get();
+      Map<String, dynamic> foodData = {};
 
-      Map<String, dynamic> existingData =
-          documentSnapshot.data() as Map<String, dynamic>;
-
-      existingData[DateTime.now().toString()] = foodJSON;
-      if (user != null) {
-        await documentRef.set(
-          existingData,
-        );
+      if (doc.exists) {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+        foodData = data;
+        foodData[currentDate] = foodJSON;
+        await foodref.set(foodData);
+      } else {
+        foodData[currentDate] = foodJSON;
+        await foodref.set(foodData);
       }
     } catch (error) {
-      print('Error creating fields: $error');
+      print('ERROR CREATING FIELDS: $error');
     }
   }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
-import 'package:flutter_nutrition_tracker/models/dummy_data.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/screens/add_nutritioin_screen.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
@@ -21,7 +20,7 @@ class _AllNutritionState extends State<AllNutrition> {
   List<Food> _foodList = [];
 
   Future<void> fetchTodaysFood() async {
-    List<Food> foods = await database.getDocument("2024-01-15");
+    List<Food> foods = await database.getDocument("2024-01-14");
     setState(() {
       _foodList = foods;
     });
