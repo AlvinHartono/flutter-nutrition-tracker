@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
 import 'package:flutter_nutrition_tracker/models/dummy_data.dart';
+import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/screens/add_nutritioin_screen.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
@@ -13,18 +15,34 @@ class AllNutrition extends StatefulWidget {
 }
 
 class _AllNutritionState extends State<AllNutrition> {
-  final List<FoodCard> _listCard = dummyData;
-
+  FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
   final User? user = FirebaseAuthService().currentUser;
+
+  List<Food> _foodList = [];
+
+  Future<void> fetchTodaysFood() async {
+    List<Food> foods = await database.getDocument("2024-01-15");
+    setState(() {
+      _foodList = foods;
+    });
+    print("actual food list: " + _foodList.toString());
+    print("fetched food list: " + foods.toString());
+  }
 
   Future<void> signOut() async {
     await FirebaseAuthService().signOut();
   }
 
-  void _addFoodCard(FoodCard foodcard) {
+  void _addFood(Food food) {
     setState(() {
-      _listCard.add(foodcard);
+      _foodList.add(food);
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchTodaysFood();
   }
 
   @override
@@ -101,16 +119,22 @@ class _AllNutritionState extends State<AllNutrition> {
               height: 14,
             ),
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10.0,
-                  vertical: 5.0,
-                ),
-                itemCount: _listCard.length,
-                itemBuilder: (context, index) {
-                  return _listCard[index];
-                },
-              ),
+              child: _foodList.isEmpty
+                  ? const Center(
+                      child: Text("No data"),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 5.0,
+                      ),
+                      itemCount: _foodList.length,
+                      itemBuilder: (context, index) {
+                        return FoodCard(
+                          food: _foodList[index],
+                        );
+                      },
+                    ),
             ),
           ],
         ),
@@ -123,7 +147,7 @@ class _AllNutritionState extends State<AllNutrition> {
             ),
           );
           if (newData != null) {
-            _addFoodCard(newData);
+            _addFood(newData);
           }
         },
         child: const Icon(Icons.add),

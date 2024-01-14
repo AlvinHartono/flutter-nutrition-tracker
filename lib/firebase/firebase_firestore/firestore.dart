@@ -11,32 +11,45 @@ class FirebaseFirestoreHelper {
   String currentDate = DateTime.now().toString();
 
   Future<void> createFields(String? id, Map<String, dynamic> foodJSON) async {
-    DocumentReference documentRef = _db.collection(userId).doc("2024-01-15");
-    DocumentSnapshot documentSnapshot = await documentRef.get();
+    try {
+      DocumentReference documentRef = _db.collection(userId).doc("2024-01-15");
+      DocumentSnapshot documentSnapshot = await documentRef.get();
 
-    Map<String, dynamic> existingData =
-        documentSnapshot.data() as Map<String, dynamic>;
+      Map<String, dynamic> existingData =
+          documentSnapshot.data() as Map<String, dynamic>;
 
-    existingData[DateTime.now().toString()] = foodJSON;
-    if (user != null) {
-      await documentRef.set(
-        existingData,
-      );
+      existingData[DateTime.now().toString()] = foodJSON;
+      if (user != null) {
+        await documentRef.set(
+          existingData,
+        );
+      }
+    } catch (error) {
+      print('Error creating fields: $error');
     }
   }
 
   Future<List<Food>> getDocument(String date) async {
     //
     try {
-      QuerySnapshot querySnapshot = await _db.collection(userId).get();
-      List<Food> foods = querySnapshot.docs.map((doc) {
+      final foodRef = _db.collection(userId).doc(date);
+      DocumentSnapshot doc = await foodRef.get();
+
+      if (doc.exists) {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-        return Food.fromJson(data);
-      }).toList();
-      return foods;
+        List<Food> foodList = [];
+        print(data.toString());
+
+        data.forEach((timestamp, foodJSON) {
+          Food food = Food.fromJson(foodJSON);
+          foodList.add(food);
+        });
+
+        return foodList;
+      }
     } catch (error) {
       print('Error fetching list: $error');
-      return [];
     }
+    return [];
   }
 }
