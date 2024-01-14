@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/config/config.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +23,8 @@ class _AddNutritionState extends State<AddNutrition> {
   bool _isVisible = false;
   bool _isNotFound = false;
   List<Food> _foods = [];
+  Map<String, dynamic> _foodJSON = {};
+  final FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
 
   Future<List<Food>> fetchData(
       {required String foodName, required String quantity}) async {
@@ -35,6 +39,7 @@ class _AddNutritionState extends State<AddNutrition> {
 
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
+      _foodJSON = jsonList[0];
 
       setState(() {
         for (var foodsJson in jsonList) {
@@ -48,6 +53,13 @@ class _AddNutritionState extends State<AddNutrition> {
       throw Exception('Failed to load data');
     }
     return foods;
+  }
+
+  Future<void> _sendFoodToDatabase() async {
+    String? userId = FirebaseAuthService().currentUser?.uid;
+    if (userId != '') {}
+    FirebaseFirestoreHelper()
+        .createFields(FirebaseFirestoreHelper().userId, _foodJSON);
   }
 
   //
@@ -202,6 +214,8 @@ class _AddNutritionState extends State<AddNutrition> {
                     carbohydratesTotalG: _foods[0].carbohydratesTotalG,
                     fiberG: _foods[0].fiberG,
                     sugarG: _foods[0].sugarG);
+
+                _sendFoodToDatabase();
 
                 Navigator.of(context).pop(
                   FoodCard(food: food),
