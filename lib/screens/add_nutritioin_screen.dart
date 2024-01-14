@@ -5,7 +5,6 @@ import 'package:flutter_nutrition_tracker/config/config.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
-import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 import 'package:http/http.dart' as http;
 
 class AddNutrition extends StatefulWidget {
@@ -19,6 +18,14 @@ class _AddNutritionState extends State<AddNutrition> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _foodName = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _foodName.dispose();
+    _quantity.dispose();
+  }
 
   bool _isVisible = false;
   bool _isNotFound = false;
@@ -218,7 +225,7 @@ class _AddNutritionState extends State<AddNutrition> {
                 _sendFoodToDatabase();
 
                 Navigator.of(context).pop(
-                  FoodCard(food: food),
+                  food,
                 );
               },
               icon: const Icon(Icons.add),
