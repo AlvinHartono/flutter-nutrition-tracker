@@ -19,11 +19,16 @@ class _AllNutritionState extends State<AllNutrition> {
   final User? user = FirebaseAuthService().currentUser;
 
   List<Food> _foodList = [];
+  List<double> _calorieList = [];
+  double totalCalories = 0.0;
 
   Future<void> fetchTodaysFood() async {
     List<Food> foods = await database.getDocument("2024-01-14");
     setState(() {
       _foodList = foods;
+      for (Food food in _foodList) {
+        totalCalories += food.calories;
+      }
     });
     print("actual food list: " + _foodList.toString());
     print("fetched food list: " + foods.toString());
@@ -114,6 +119,7 @@ class _AllNutritionState extends State<AllNutrition> {
                       child: PieChartWidget(
                         listOfFood: _foodList,
                         title: "Calories",
+                        totalValue: totalCalories,
                       ),
                     ),
                   ],
@@ -151,6 +157,7 @@ class _AllNutritionState extends State<AllNutrition> {
                           onDismissed: (direction) {
                             print('yo');
                             setState(() {
+                              totalCalories -= _foodList[index].calories;
                               _foodList.removeAt(index);
                             });
                           },
@@ -173,6 +180,9 @@ class _AllNutritionState extends State<AllNutrition> {
           );
           if (newData != null) {
             _addFood(newData);
+            setState(() {
+              totalCalories += _foodList.last.calories;
+            });
           }
         },
         child: const Icon(Icons.add),
