@@ -156,15 +156,19 @@ class _AddNutritionState extends State<AddNutrition> {
                       Container(
                         // color: Colors.black,
                         width: screenWidth * 0.25,
-                        height: screenheight * 0.2,
+                        height: screenheight * 0.16,
 
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0))),
                           onPressed: _searchButtonPressed,
-                          child: const Text("Search"),
+                          child: const Icon(
+                            Icons.search,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ],
@@ -237,7 +241,7 @@ class _AddNutritionState extends State<AddNutrition> {
 
                 _sendFoodToDatabase();
 
-                List<dynamic> addedData = [food, date];
+                List<dynamic> addedData = [food, date.toString()];
 
                 Navigator.of(context).pop(
                   addedData,

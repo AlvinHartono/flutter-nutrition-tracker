@@ -64,7 +64,9 @@ class _PieChartWidgetState extends State<PieChartWidget> {
         PieChartSectionData(
           value: _typeOfData(title: widget.title, food: food),
           color: predefinedColors[i % predefinedColors.length],
-          showTitle: false,
+          showTitle: true,
+          title:
+              "${(_typeOfData(title: widget.title, food: food) / widget.totalValue * 100).toStringAsFixed(2)}%",
         ),
       );
     }
