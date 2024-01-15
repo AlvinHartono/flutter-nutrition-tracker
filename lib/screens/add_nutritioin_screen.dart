@@ -16,8 +16,9 @@ class AddNutrition extends StatefulWidget {
 
 class _AddNutritionState extends State<AddNutrition> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _foodName = TextEditingController();
-  final TextEditingController _quantity = TextEditingController();
+  late TextEditingController _foodName;
+  late TextEditingController _quantity;
+
   bool _isVisible = false;
   List<Food> _foods = [];
   var foods = <Food>[];
@@ -25,9 +26,22 @@ class _AddNutritionState extends State<AddNutrition> {
 
   final FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
 
+  DateTime date = DateTime.now();
+
+  String generateDateKey(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _foodName = TextEditingController();
+    _quantity = TextEditingController();
+  }
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _foodName.dispose();
     _quantity.dispose();
@@ -60,8 +74,8 @@ class _AddNutritionState extends State<AddNutrition> {
   Future<void> _sendFoodToDatabase() async {
     String? userId = FirebaseAuthService().currentUser?.uid;
     if (userId != null && userId.isNotEmpty) {
-      FirebaseFirestoreHelper()
-          .createFields(FirebaseFirestoreHelper().userId, _foodJSON);
+      FirebaseFirestoreHelper().createFields(FirebaseFirestoreHelper().userId,
+          _foodJSON, generateDateKey(date), date.toString());
     }
   }
 
@@ -223,8 +237,10 @@ class _AddNutritionState extends State<AddNutrition> {
 
                 _sendFoodToDatabase();
 
+                List<dynamic> addedData = [food, date];
+
                 Navigator.of(context).pop(
-                  food,
+                  addedData,
                 );
               },
               icon: const Icon(Icons.add),

@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
@@ -18,16 +19,43 @@ class _AllNutritionState extends State<AllNutrition> {
   FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
   final User? user = FirebaseAuthService().currentUser;
 
-  List<Food> _foodList = [];
-  List<double> _calorieList = [];
   double totalCalories = 0.0;
+  double totalProtein = 0.0;
+  double totalCarbohydrates = 0.0;
+
+  DateTime today = DateTime.now();
+
+  List<Food> _foodList = [];
+  List<String> _foodKey = [];
+  final List<Color> predefinedColors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.yellow,
+    Colors.orange,
+    Colors.purple,
+    Colors.teal,
+    Colors.pink,
+    Colors.indigo,
+    Colors.brown,
+  ];
+
+  String generateDateKey(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
 
   Future<void> fetchTodaysFood() async {
-    List<Food> foods = await database.getDocument("2024-01-14");
+    List<Food> foods = await database.getDocument(
+      generateDateKey(today),
+    );
+    _foodKey = await database.getFieldKey(generateDateKey(today));
+
     setState(() {
       _foodList = foods;
       for (Food food in _foodList) {
         totalCalories += food.calories;
+        totalProtein += food.proteinG;
+        totalCarbohydrates += food.carbohydratesTotalG;
       }
     });
     print("actual food list: " + _foodList.toString());
@@ -106,24 +134,37 @@ class _AllNutritionState extends State<AllNutrition> {
         child: Column(
           children: [
             Container(
-                width: double.infinity,
-                height: 250,
-                color: Colors.red,
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-                      color: Colors.black12,
-                      width: 200,
-                      height: 200,
-                      child: PieChartWidget(
+              width: double.infinity,
+              height: 250,
+              color: Colors.white,
+              child: CarouselSlider(
+                items: [
+                  Center(
+                    child: PieChartWidget(
                         listOfFood: _foodList,
                         title: "Calories",
-                        totalValue: totalCalories,
-                      ),
-                    ),
-                  ],
-                )),
+                        totalValue: totalCalories),
+                  ),
+                  Center(
+                    child: PieChartWidget(
+                        listOfFood: _foodList,
+                        title: "Protein",
+                        totalValue: totalProtein),
+                  ),
+                  Center(
+                    child: PieChartWidget(
+                        listOfFood: _foodList,
+                        title: "Carbs",
+                        totalValue: totalCarbohydrates),
+                  ),
+                ],
+                options: CarouselOptions(
+                  height: 248,
+                  enlargeCenterPage: true,
+                  enableInfiniteScroll: false,
+                ),
+              ),
+            ),
             const SizedBox(
               height: 14,
             ),
@@ -158,11 +199,21 @@ class _AllNutritionState extends State<AllNutrition> {
                             print('yo');
                             setState(() {
                               totalCalories -= _foodList[index].calories;
+                              totalProtein -= _foodList[index].proteinG;
+                              totalCarbohydrates -=
+                                  _foodList[index].carbohydratesTotalG;
                               _foodList.removeAt(index);
                             });
+                            database.deleteFood(
+                              generateDateKey(today),
+                              _foodKey[index],
+                            );
+
+                            _foodKey.removeAt(index);
                           },
                           child: FoodCard(
                             food: _foodList[index],
+                            colorList: predefinedColors[index],
                           ),
                         );
                       },
@@ -179,9 +230,12 @@ class _AllNutritionState extends State<AllNutrition> {
             ),
           );
           if (newData != null) {
-            _addFood(newData);
+            _addFood(newData[0]);
+            _foodKey.add(newData[1]);
             setState(() {
               totalCalories += _foodList.last.calories;
+              totalProtein += _foodList.last.proteinG;
+              totalCarbohydrates += _foodList.last.carbohydratesTotalG;
             });
           }
         },
