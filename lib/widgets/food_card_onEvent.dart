@@ -4,11 +4,11 @@ import 'package:flutter_nutrition_tracker/models/food.dart';
 class FoodCardOnEvent extends StatelessWidget {
   const FoodCardOnEvent(
       {super.key,
-      required this.food,
+      // required this.food,
       required this.totalCalories,
       required this.totalCarbs,
       required this.totalProtein});
-  final Food food;
+  //final Food food;
 
   final double totalCalories;
   final double totalProtein;
@@ -19,9 +19,9 @@ class FoodCardOnEvent extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 0.5),
+        padding: const EdgeInsets.symmetric(vertical: 1.0),
         child: Card(
-          margin: const EdgeInsets.all(16.0),
+          margin: const EdgeInsets.all(8.0),
           color: Colors.white,
           elevation: 2.0,
           shape:
@@ -50,17 +50,23 @@ class FoodCardOnEvent extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
+        Padding(
+          padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
+          child: Text(
+            label,
+            style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          textAlign: TextAlign.right,
-        )
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0), // Adjust the padding as needed
+          child: Text(
+            value,
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.right,
+          ),
+        ),
       ],
     );
   }

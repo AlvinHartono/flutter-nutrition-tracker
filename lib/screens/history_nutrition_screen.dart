@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card_onEvent.dart';
+import 'package:flutter_nutrition_tracker/widgets/food_data_table.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
 
@@ -90,24 +91,48 @@ class _HistoryState extends State<History> {
             ),
           ),
           Expanded(
-              child: _foodlist.isEmpty
-                  ? const Center(
-                      child: Text("no data"),
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 5.0,
-                        vertical: 5.0,
+            child: _foodlist.isEmpty
+                ? const Center(
+                    child: Text("no data"),
+                  )
+                : Column(
+                    children: [
+                      SizedBox(height: 10),
+                      Container(
+                        height: MediaQuery.of(context).size.height *
+                            0.15, // Adjust the height as needed
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 5.0,
+                                vertical: 5.0,
+                              ),
+                              child: FoodCardOnEvent(
+                                totalCalories: totalCalories,
+                                totalCarbs: totalCarbs,
+                                totalProtein: totalProtein,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      itemCount: 1,
-                      itemBuilder: (context, index) {
-                        return FoodCardOnEvent(
-                            food: _foodlist[index],
-                            totalCalories: totalCalories,
-                            totalCarbs: totalCarbs,
-                            totalProtein: totalProtein);
-                      },
-                    ))
+
+                      const SizedBox(height: 10), // Adjust the space as needed
+                      Container(
+                        height: MediaQuery.of(context).size.height *
+                            0.25, // Adjust the height as needed
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: FoodDataTable(food: _foodlist),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+          )
         ],
       ),
     );
