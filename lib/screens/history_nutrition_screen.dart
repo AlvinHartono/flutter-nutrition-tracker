@@ -117,8 +117,6 @@ class _HistoryState extends State<History> {
                           ],
                         ),
                       ),
-
-                      const SizedBox(height: 10), // Adjust the space as needed
                       Container(
                         height: MediaQuery.of(context).size.height *
                             0.25, // Adjust the height as needed

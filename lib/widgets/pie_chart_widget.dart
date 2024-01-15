@@ -6,11 +6,11 @@ import 'package:flutter_nutrition_tracker/models/food.dart';
 
 class PieChartWidget extends StatefulWidget {
   const PieChartWidget({
-    super.key,
+    Key? key,
     required this.listOfFood,
     required this.title,
     required this.totalValue,
-  });
+  }) : super(key: key);
 
   final List<Food> listOfFood;
   final String title;
@@ -34,25 +34,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
     Colors.brown,
   ];
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  double _typeOfData({
-    required String title,
-    required Food food,
-  }) {
-    if (title == "Calories") {
-      return food.calories;
-    } else if (title == "Protein") {
-      return food.proteinG;
-    } else if (title == "Carbs") {
-      return food.carbohydratesTotalG;
-    } else {
-      return 0;
-    }
-  }
+  int? touchedIndex; // Keep track of the touched index
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +49,9 @@ class _PieChartWidgetState extends State<PieChartWidget> {
           showTitle: true,
           title:
               "${(_typeOfData(title: widget.title, food: food) / widget.totalValue * 100).toStringAsFixed(2)}%",
+          radius: touchedIndex == i
+              ? 120
+              : null, // Adjust the radius based on touch
         ),
       );
     }
@@ -88,12 +73,38 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                 PieChartData(
                   sections: sections,
                   pieTouchData: PieTouchData(
-                    touchCallback: (p0, p1) {},
+                    touchCallback: (FlTouchEvent event,
+                        PieTouchResponse? pieTouchResponse) {
+                      setState(() {
+                        if (pieTouchResponse != null &&
+                            pieTouchResponse.touchedSection != null) {
+                          touchedIndex = pieTouchResponse
+                              .touchedSection!.touchedSectionIndex;
+                        } else {
+                          touchedIndex = null;
+                        }
+                      });
+                    },
                   ),
                 ),
               )
             : Container(),
       ],
     );
+  }
+
+  double _typeOfData({
+    required String title,
+    required Food food,
+  }) {
+    if (title == "Calories") {
+      return food.calories;
+    } else if (title == "Protein") {
+      return food.proteinG;
+    } else if (title == "Carbs") {
+      return food.carbohydratesTotalG;
+    } else {
+      return 0;
+    }
   }
 }
