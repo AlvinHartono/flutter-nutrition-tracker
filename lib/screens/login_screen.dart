@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLogin = true;
+  bool isLoading = false;
   String? errorMessage = "";
 
   Future<void> signInWithEmailAndPassword() async {
@@ -108,18 +109,27 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 36,
                   ),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        //firebase
-                        signInWithEmailAndPassword();
+                        setState(() {
+                          isLoading = true;
+                        });
+
+                        try {
+                          await signInWithEmailAndPassword();
+                        } catch (error) {
+                          print("ERROR : $error");
+                        }
                       }
                     },
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            "Login",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

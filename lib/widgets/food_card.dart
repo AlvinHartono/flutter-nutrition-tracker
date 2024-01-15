@@ -8,22 +8,28 @@ extension StringExtension on String {
 }
 
 class FoodCard extends StatelessWidget {
-  const FoodCard({super.key, required this.food});
+  const FoodCard({
+    super.key,
+    required this.food,
+    required this.colorList,
+  });
   final Food food;
+  final Color colorList;
 
   @override
   Widget build(BuildContext context) {
+    print(colorList.toString());
     return GestureDetector(
       onTap: () {
         showModalBottomSheet(
+          backgroundColor: Colors.grey[60],
           context: context,
           builder: (context) {
             return Container(
               color: Colors.grey[60],
-              height: 700,
-              child: Center(
-                child: Text(food.name),
-              ),
+              height: 500,
+              width: MediaQuery.of(context).size.width,
+              child: foodData(food, context),
             );
           },
         );
@@ -55,7 +61,7 @@ class FoodCard extends StatelessWidget {
                     height: 70,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
-                      color: const Color.fromARGB(255, 26, 17, 17),
+                      color: colorList,
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -65,18 +71,18 @@ class FoodCard extends StatelessWidget {
                           style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 20,
-                              color: Colors.white),
+                              color: Colors.black),
                         ),
                         const Text(
                           'Calories',
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.black),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(16, 8, 0, 0),
+                  margin: const EdgeInsets.fromLTRB(16, 8, 0, 0),
                   // color: Colors.green,
                   child: Text(
                     food.name.capitalize(),
@@ -90,6 +96,426 @@ class FoodCard extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget foodData(Food food, BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            food.name.capitalize(),
+            style: const TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Calories :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.4,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.calories.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Serving Size :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.4,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.servingSizeG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Total Fat (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.4,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.fatTotalG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Saturated Fat (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.fatSaturatedG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Protein (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.proteinG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Sodium (mg) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.sodiumMg.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Potassium (mg) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.potassiumMg.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Cholesterol (mg) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.cholesterolMg.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.50,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Carbohydrates (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.calories.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Fiber (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.fiberG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.5,
+                // color: Colors.red,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      "Sugar (g) :",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                height: 40,
+                width: MediaQuery.of(context).size.width * 0.40,
+                // color: Colors.blue,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      food.sugarG.toString(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

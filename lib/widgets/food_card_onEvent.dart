@@ -30,11 +30,14 @@ class FoodCardOnEvent extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildNutritionInformation(
-                  label: "Total Calories \t", value: totalCalories.toString()),
+                  label: "Total Calories \t",
+                  value: totalCalories.toStringAsFixed(2)),
               _buildNutritionInformation(
-                  label: "Total Protein \t", value: totalProtein.toString()),
+                  label: "Total Protein \t",
+                  value: totalProtein.toStringAsFixed(2)),
               _buildNutritionInformation(
-                  label: "Total Carbs \t", value: totalCarbs.toString()),
+                  label: "Total Carbs \t",
+                  value: totalCarbs.toStringAsFixed(2)),
             ],
           ),
         ),

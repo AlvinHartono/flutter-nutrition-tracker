@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_nutrition_tracker/models/dummy_data.dart';
 import 'package:flutter_nutrition_tracker/models/food.dart';
-import 'package:flutter_nutrition_tracker/widgets/food_card.dart';
 import 'package:flutter_nutrition_tracker/widgets/food_card_onEvent.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_firestore/firestore.dart';
-import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class History extends StatefulWidget {
   const History({Key? key}) : super(key: key);
@@ -19,7 +15,6 @@ class _HistoryState extends State<History> {
   DateTime today = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   List<Food> _foodlist = [];
-
   double totalCalories = 0.0;
   double totalProtein = 0.0;
   double totalCarbs = 0.0;
@@ -55,6 +50,9 @@ class _HistoryState extends State<History> {
     setState(() {
       today = day;
       _selectedDay = focusedDay;
+      totalCalories = 0.0;
+      totalProtein = 0.0;
+      totalCarbs = 0.0;
 
       fetchSelectedDaysFood(generateDateKey(_selectedDay));
     });
@@ -62,8 +60,6 @@ class _HistoryState extends State<History> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Nutrition History"),
