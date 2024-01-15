@@ -9,17 +9,18 @@ class PieChartWidget extends StatefulWidget {
     super.key,
     required this.listOfFood,
     required this.title,
+    required this.totalValue,
   });
 
   final List<Food> listOfFood;
   final String title;
+  final double totalValue;
 
   @override
   State<PieChartWidget> createState() => _PieChartWidgetState();
 }
 
 class _PieChartWidgetState extends State<PieChartWidget> {
-  double totalValue = 0.0;
   Color getRandomColor() {
     return Color.fromARGB(
       255,
@@ -29,29 +30,39 @@ class _PieChartWidgetState extends State<PieChartWidget> {
     );
   }
 
+  double _typeOfData({
+    required String title,
+    required Food food,
+  }) {
+    if (title == "Calories") {
+      return food.calories;
+    } else if (title == "protein") {
+      return food.calories;
+    } else {
+      return 0;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    for (Food food in widget.listOfFood) {
-      setState(() {
-        totalValue += food.calories;
-      });
-    }
     List<PieChartSectionData> sections = [];
     for (Food food in widget.listOfFood) {
       sections.add(
         PieChartSectionData(
-          value: food.calories,
+          value: _typeOfData(title: widget.title, food: food),
           color: getRandomColor(),
           showTitle: false,
         ),
       );
     }
 
+    String doubleData = widget.totalValue.toStringAsFixed(2);
+
     return Stack(
       alignment: Alignment.center,
       children: [
         Text(
-          totalValue.toString(),
+          doubleData,
         ),
         PieChart(
           swapAnimationDuration: const Duration(milliseconds: 750),

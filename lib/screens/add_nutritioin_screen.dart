@@ -18,6 +18,12 @@ class _AddNutritionState extends State<AddNutrition> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _foodName = TextEditingController();
   final TextEditingController _quantity = TextEditingController();
+  bool _isVisible = false;
+  List<Food> _foods = [];
+  var foods = <Food>[];
+  Map<String, dynamic> _foodJSON = {};
+
+  final FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
 
   @override
   void dispose() {
@@ -26,12 +32,6 @@ class _AddNutritionState extends State<AddNutrition> {
     _foodName.dispose();
     _quantity.dispose();
   }
-
-  bool _isVisible = false;
-  bool _isNotFound = false;
-  List<Food> _foods = [];
-  Map<String, dynamic> _foodJSON = {};
-  final FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
 
   Future<List<Food>> fetchData(
       {required String foodName, required String quantity}) async {
@@ -42,18 +42,13 @@ class _AddNutritionState extends State<AddNutrition> {
     var response = await http
         .get(Uri.parse(url), headers: {'X-Api-Key': AppConfig.apiKey});
 
-    var foods = <Food>[];
-
     if (response.statusCode == 200) {
       List<dynamic> jsonList = jsonDecode(response.body);
       _foodJSON = jsonList[0];
 
       setState(() {
         for (var foodsJson in jsonList) {
-          _isNotFound = false;
-          if (jsonList.isNotEmpty) {
-            foods.add(Food.fromJson(foodsJson));
-          }
+          foods.add(Food.fromJson(foodsJson));
         }
       });
     } else {
@@ -64,9 +59,10 @@ class _AddNutritionState extends State<AddNutrition> {
 
   Future<void> _sendFoodToDatabase() async {
     String? userId = FirebaseAuthService().currentUser?.uid;
-    if (userId != '') {}
-    FirebaseFirestoreHelper()
-        .createFields(FirebaseFirestoreHelper().userId, _foodJSON);
+    if (userId != null && userId.isNotEmpty) {
+      FirebaseFirestoreHelper()
+          .createFields(FirebaseFirestoreHelper().userId, _foodJSON);
+    }
   }
 
   //
@@ -74,15 +70,9 @@ class _AddNutritionState extends State<AddNutrition> {
     setState(() {
       _isVisible = true;
     });
-
     try {
       _foods =
           await fetchData(foodName: _foodName.text, quantity: _quantity.text);
-      if (_foods.isEmpty) {
-        setState(() {
-          _isNotFound = true;
-        });
-      }
     } catch (error) {
       print('Error fetching data: $error');
       setState(() {
@@ -107,6 +97,7 @@ class _AddNutritionState extends State<AddNutrition> {
             child: Column(
               children: [
                 Container(
+                  // color: Colors.red,
                   width: screenWidth,
                   height: screenheight * 0.2,
                   // color: Colors.red,
@@ -117,7 +108,7 @@ class _AddNutritionState extends State<AddNutrition> {
                       Container(
                         // color: Colors.yellow,
                         height: 150,
-                        width: 300,
+                        width: screenWidth * 0.65,
                         child: Column(
                           children: [
                             TextFormField(
@@ -148,9 +139,19 @@ class _AddNutritionState extends State<AddNutrition> {
                           ],
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: _searchButtonPressed,
-                        child: const Text("Search"),
+                      Container(
+                        // color: Colors.black,
+                        width: screenWidth * 0.25,
+                        height: screenheight * 0.2,
+
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0))),
+                          onPressed: _searchButtonPressed,
+                          child: const Text("Search"),
+                        ),
                       ),
                     ],
                   ),
@@ -172,9 +173,7 @@ class _AddNutritionState extends State<AddNutrition> {
   }
 
   Widget _buildResultWidget() {
-    if (_isNotFound) {
-      return const Text("Nutrition Data is not found, try another food name");
-    } else if (_foods.isEmpty) {
+    if (_foods.isEmpty) {
       return const Center(
         child: CircularProgressIndicator(),
       );
