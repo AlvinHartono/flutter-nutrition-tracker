@@ -1,10 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_nutrition_tracker/screens/main_screen.dart';
 import 'package:flutter_nutrition_tracker/screens/signup_screen.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, required this.onClickedSignUp});
+
+  final VoidCallback onClickedSignUp;
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -23,7 +27,6 @@ class _LoginScreenState extends State<LoginScreen> {
         email: _email.text,
         password: _password.text,
       );
-      print(userCredential);
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
@@ -134,15 +137,23 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Don't have an account?"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (context) => const SignupScreen(),
-                          ));
-                        },
-                        child: const Text("Sign Up"),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                          text: 'Don\'t have an account? ',
+                          children: [
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = widget.onClickedSignUp,
+                              text: 'Sign Up',
+                              style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
