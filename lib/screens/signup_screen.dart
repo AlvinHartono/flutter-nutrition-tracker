@@ -1,10 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nutrition_tracker/screens/login_screen.dart';
 import 'package:flutter_nutrition_tracker/firebase/firebase_auth_implementation/firebase_auth_services.dart';
 
 class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+  const SignupScreen({super.key, required this.onClickedSignIn});
+
+  final VoidCallback onClickedSignIn;
 
   @override
   State<SignupScreen> createState() => _SignupScreenState();
@@ -12,6 +15,7 @@ class SignupScreen extends StatefulWidget {
 
 class _SignupScreenState extends State<SignupScreen> {
   String? errorMessage = '';
+  bool isLoading = false;
 
   final FirebaseAuthService _auth = FirebaseAuthService();
 
@@ -109,32 +113,55 @@ class _SignupScreenState extends State<SignupScreen> {
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
                         //firebase
-                        signUp();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Processing Data')),
-                        );
+                        setState(() {
+                          isLoading = true;
+                        });
+                        try {
+                          signUp();
+                        } catch (error) {
+                          print("ERROR SIGN UP : $error");
+                        }
                       }
                     },
-                    child: const Text(
-                      "SignUp",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
+                    child: isLoading
+                        ? const CircularProgressIndicator()
+                        : const Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Already have an account?"),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .pushReplacement(MaterialPageRoute(
-                            builder: (context) => const LoginScreen(),
-                          ));
-                        },
-                        child: const Text("Login"),
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                          text: 'Have an account? ',
+                          children: [
+                            TextSpan(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = widget.onClickedSignIn,
+                              text: 'Sign in',
+                              style: const TextStyle(
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      // TextButton(
+                      //   onPressed: () {
+                      //     Navigator.of(context)
+                      //         .pushReplacement(MaterialPageRoute(
+                      //       builder: (context) => const LoginScreen(),
+                      //     ));
+                      //   },
+                      //   child: const Text("Login"),
+                      // ),
                     ],
                   ),
                   Text(errorMessage == "" ? "" : "$errorMessage"),
@@ -156,19 +183,6 @@ class _SignupScreenState extends State<SignupScreen> {
       final userCredential = await _auth.signUpWithEmailAndPassword(
           email: email, password: password);
       print(userCredential);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Signup Successful'),
-        ),
-      );
-
-      Future.delayed(const Duration(seconds: 1), () {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
-        ));
-      });
     } on FirebaseAuthException catch (error) {
       ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
