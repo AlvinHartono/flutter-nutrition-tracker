@@ -6,11 +6,11 @@ import 'package:flutter_nutrition_tracker/models/food.dart';
 
 class PieChartWidget extends StatefulWidget {
   const PieChartWidget({
-    Key? key,
+    super.key,
     required this.listOfFood,
     required this.title,
     required this.totalValue,
-  }) : super(key: key);
+  });
 
   final List<Food> listOfFood;
   final String title;

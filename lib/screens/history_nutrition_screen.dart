@@ -97,16 +97,16 @@ class _HistoryState extends State<History> {
                   )
                 : Column(
                     children: [
-                      SizedBox(height: 10),
-                      Container(
+                      const SizedBox(height: 5),
+                      SizedBox(
                         height: MediaQuery.of(context).size.height *
-                            0.15, // Adjust the height as needed
+                            0.16, // Adjust the height as needed
                         child: Column(
                           children: [
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 5.0,
-                                vertical: 5.0,
+                                vertical: 2.0,
                               ),
                               child: FoodCardOnEvent(
                                 totalCalories: totalCalories,
@@ -117,9 +117,9 @@ class _HistoryState extends State<History> {
                           ],
                         ),
                       ),
-                      Container(
+                      SizedBox(
                         height: MediaQuery.of(context).size.height *
-                            0.25, // Adjust the height as needed
+                            0.20, // Adjust the height as needed
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
                           child: SingleChildScrollView(
@@ -130,7 +130,7 @@ class _HistoryState extends State<History> {
                       ),
                     ],
                   ),
-          )
+          ),
         ],
       ),
     );
