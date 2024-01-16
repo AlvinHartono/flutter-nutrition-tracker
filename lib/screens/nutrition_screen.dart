@@ -132,7 +132,7 @@ class _AllNutritionState extends State<AllNutrition> {
                     color: Colors.white,
                   ),
                 ),
-                onTap: signOut,
+                onTap: () {},
               ),
             ),
             Container(
