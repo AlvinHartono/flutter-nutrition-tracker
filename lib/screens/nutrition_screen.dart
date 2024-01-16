@@ -18,10 +18,12 @@ class AllNutrition extends StatefulWidget {
 class _AllNutritionState extends State<AllNutrition> {
   FirebaseFirestoreHelper database = FirebaseFirestoreHelper();
   final User? user = FirebaseAuthService().currentUser;
+  TextEditingController _setGoal = TextEditingController();
 
   double totalCalories = 0.0;
   double totalProtein = 0.0;
   double totalCarbohydrates = 0.0;
+  double setGoals = 0;
 
   DateTime today = DateTime.now();
 
@@ -118,6 +120,61 @@ class _AllNutritionState extends State<AllNutrition> {
                 tileColor: Colors.red,
                 title: const Text("Sign Out"),
                 onTap: signOut,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
+              child: ListTile(
+                tileColor: Colors.black,
+                title: Text(
+                  "Calorie Goal: $totalCalories / $setGoals",
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: signOut,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: TextButton(
+                child: const Text('Set Goal'),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: const Text('Set Your Calorie Goal'),
+                        content: TextField(
+                          keyboardType: TextInputType.number,
+                          controller: _setGoal,
+                          decoration: const InputDecoration(
+                            hintText: '0',
+                          ),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text("cancel"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              setState(() {
+                                setGoals = double.parse(_setGoal.text);
+                                print(setGoals);
+                                Navigator.of(context).pop();
+                                Navigator.of(context).pop();
+                              });
+                            },
+                            child: const Text("Set"),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ),
           ],
