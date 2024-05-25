@@ -1,6 +1,6 @@
 # flutter-nutrtion-tracker
 
-Download Mental Nutrition Tracker APK:
+Download Nutrition Tracker APK:
 https://bit.ly/3UYBiBt
 
 
