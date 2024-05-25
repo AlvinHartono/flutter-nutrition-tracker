@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1061027462203",
+    "project_id": "flutter-nutrtion-tracker",
+    "storage_bucket": "flutter-nutrtion-tracker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061027462203:android:186de4638c2e1c8196301e",
+        "android_client_info": {
+          "package_name": "com.example.flutter_nutrition_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5dmAfmR7NYvr_ok7aN-TzzBnsbLnaVbM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
