@@ -11,11 +11,11 @@ make sure you have installed Flutter, Android emulator or a physical device, and
 - How to install Flutter: https://docs.flutter.dev/get-started/install
 
 ## Step 1: Clone Repository
-```git clone [https://github.com/AlvinHartono/mental_math_trainer_app.git](https://github.com/AlvinHartono/flutter-nutrition-tracker.git)```
+```git clone https://github.com/AlvinHartono/flutter-nutrition-tracker.git```
 
 ## Step 2: Navitage to the Project Directory
 After cloning the repository, navigate to the project directory
-```cd mental-math-trainer-app```
+```cd flutter-nutrtion-tracker```
 
 ## Step 3: Open in Visual Studio Code
 ```code .```
