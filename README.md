@@ -1,6 +1,6 @@
 # flutter-nutrtion-tracker
 
-Download Mental Math Trainer APK:
+Download Mental Nutrition Tracker APK:
 https://bit.ly/3UYBiBt
 
 
